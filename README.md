@@ -2,7 +2,6 @@
 
 Price intelligence across **175 game-economy markets** (92 EU + 83 US realms). Collects auction prices for 200+ tracked items every hour through the official Blizzard API and answers: **"which items are worth crafting today, and where?"**
 
-
 ## What it does
 
 - Hourly collection from all 175 connected realms in two regions — **1.9M+ price points** stored
