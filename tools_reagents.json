@@ -1,0 +1,177 @@
+[
+  {
+    "key": "hide",
+    "rank": "rank2",
+    "id": 238529,
+    "name": "Majestic Hide",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_skinning_stormchargedleather1.jpg"
+  },
+  {
+    "key": "claw",
+    "rank": "rank2",
+    "id": 238528,
+    "name": "Majestic Claw",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_skinning_animalparts_claws.jpg"
+  },
+  {
+    "key": "fin",
+    "rank": "rank2",
+    "id": 238530,
+    "name": "Majestic Fin",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_icon_wing01b.jpg"
+  },
+  {
+    "key": "alloy",
+    "rank": "rank1",
+    "id": 238204,
+    "name": "Sterling Alloy",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_blacksmithing_blacksmithingalloys_dazzling.jpg"
+  },
+  {
+    "key": "alloy",
+    "rank": "rank2",
+    "id": 238205,
+    "name": "Sterling Alloy",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_blacksmithing_blacksmithingalloys_dazzling.jpg"
+  },
+  {
+    "key": "gemdust",
+    "rank": "rank1",
+    "id": 242620,
+    "name": "Glimmering Gemdust",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_jewelcrafting_gem_dust_red.jpg"
+  },
+  {
+    "key": "gemdust",
+    "rank": "rank2",
+    "id": 242621,
+    "name": "Glimmering Gemdust",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_jewelcrafting_gem_dust_red.jpg"
+  },
+  {
+    "key": "lens",
+    "rank": "rank1",
+    "id": 240972,
+    "name": "Sin'dorei Lens",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_jewelcrafting_glass_reagent_refined_blue.jpg"
+  },
+  {
+    "key": "lens",
+    "rank": "rank2",
+    "id": 240973,
+    "name": "Sin'dorei Lens",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_jewelcrafting_glass_reagent_refined_blue.jpg"
+  },
+  {
+    "key": "crystal",
+    "rank": "rank1",
+    "id": 243605,
+    "name": "Dawn Crystal",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_enchanting_enchantingcrystal_orange.jpg"
+  },
+  {
+    "key": "crystal",
+    "rank": "rank2",
+    "id": 243606,
+    "name": "Dawn Crystal",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_enchanting_enchantingcrystal_orange.jpg"
+  },
+  {
+    "key": "mun_ink",
+    "rank": "rank1",
+    "id": 245801,
+    "name": "Munsell Ink",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_inscriptions_ink_blue.jpg"
+  },
+  {
+    "key": "mun_ink",
+    "rank": "rank2",
+    "id": 245802,
+    "name": "Munsell Ink",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_inscriptions_ink_blue.jpg"
+  },
+  {
+    "key": "sie_ink",
+    "rank": "rank1",
+    "id": 245805,
+    "name": "Sienna Ink",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_inscriptions_ink_darkorange.jpg"
+  },
+  {
+    "key": "sie_ink",
+    "rank": "rank2",
+    "id": 245806,
+    "name": "Sienna Ink",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_inscriptions_ink_darkorange.jpg"
+  },
+  {
+    "key": "azeroot",
+    "rank": "rank1",
+    "id": 236774,
+    "name": "Azeroot",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_herb_earthroot.jpg"
+  },
+  {
+    "key": "azeroot",
+    "rank": "rank2",
+    "id": 236775,
+    "name": "Azeroot",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_herb_earthroot.jpg"
+  },
+  {
+    "key": "lotus",
+    "rank": "rank2",
+    "id": 236780,
+    "name": "Nocturnal Lotus",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_herbalism_blacklotus_void.jpg"
+  },
+  {
+    "key": "leather",
+    "rank": "rank2",
+    "id": 251665,
+    "name": "Silverleaf Thread",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_tailoring_tailoringspecializations_fiberarts.jpg"
+  },
+  {
+    "key": "scale",
+    "rank": "rank2",
+    "id": 236949,
+    "name": "Mote of Light",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_thematicfoozles_moteofpurelight_gold.jpg"
+  },
+  {
+    "key": "embroidery_floss",
+    "rank": "rank2",
+    "id": 251691,
+    "name": "Embroidery Floss",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_tailoring_spellthread_blue.jpg"
+  },
+  {
+    "key": "mote_light",
+    "rank": "rank2",
+    "id": 236949,
+    "name": "Mote of Light",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_thematicfoozles_moteofpurelight_gold.jpg"
+  },
+  {
+    "key": "mote_primal_energy",
+    "rank": "rank2",
+    "id": 236950,
+    "name": "Mote of Primal Energy",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_thematicfoozles_moteofprimalenergy_darkorange.jpg"
+  },
+  {
+    "key": "mote_wild_magic",
+    "rank": "rank2",
+    "id": 236951,
+    "name": "Mote of Wild Magic",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_thematicfoozles_moteofwildmadic_lightgreen.jpg"
+  },
+  {
+    "key": "mote_void",
+    "rank": "rank2",
+    "id": 236952,
+    "name": "Mote of Pure Void",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_12_profession_thematicfoozles_moteofpurevoid_blue.jpg"
+  }
+]

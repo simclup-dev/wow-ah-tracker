@@ -1,0 +1,280 @@
+{
+  "items": [
+    {
+      "formula": "hide + alloy*5",
+      "group": "bs lw tool set",
+      "id": 237951,
+      "name": "Sun-Blessed Leatherworker's Toolset"
+    },
+    {
+      "formula": "claw + alloy*5",
+      "group": "bs needlet set",
+      "id": 237950,
+      "name": "Sun-Blessed Needle Set"
+    },
+    {
+      "formula": "fin + alloy*5",
+      "group": "bs toolbox",
+      "id": 237952,
+      "name": "Sun-Blessed Blacksmith's Toolbox"
+    },
+    {
+      "formula": "claw + alloy*5 + 200",
+      "group": "bs tool",
+      "id": 238018,
+      "name": "Sun-Blessed Blacksmith's Hammer"
+    },
+    {
+      "formula": "claw + alloy*5 + 200",
+      "group": "bs tool",
+      "id": 238015,
+      "name": "Sun-Blessed Pickaxe"
+    },
+    {
+      "formula": "claw + alloy*5 + 200",
+      "group": "bs tool",
+      "id": 238014,
+      "name": "Sun-Blessed Sickle"
+    },
+    {
+      "formula": "claw + alloy*5 + 200",
+      "group": "bs tool",
+      "id": 238017,
+      "name": "Sun-Blessed Leatherworker's Knife"
+    },
+    {
+      "formula": "claw + alloy*5 + 200",
+      "group": "bs tool",
+      "id": 238016,
+      "name": "Sun-Blessed Skinning Knife"
+    },
+    {
+      "formula": "hide",
+      "group": "engi big",
+      "id": 244720,
+      "name": "Junker's Big Ol' Bag"
+    },
+    {
+      "formula": "fin + 200",
+      "group": "engi clampers",
+      "id": 244714,
+      "name": "Sin'dorei Clampers"
+    },
+    {
+      "formula": "fin",
+      "group": "engi fish",
+      "id": 244712,
+      "name": "Sin'dorei Angler's Rod"
+    },
+    {
+      "formula": "hide",
+      "group": "engi hardhat",
+      "id": 244716,
+      "name": "Sin'dorei Gilded Hardhat"
+    },
+    {
+      "formula": "fin",
+      "group": "engi headlamp",
+      "id": 244710,
+      "name": "Sin'dorei Headlamp"
+    },
+    {
+      "formula": "claw + 200",
+      "group": "engi snippers",
+      "id": 244708,
+      "name": "Sin'dorei Snippers"
+    },
+    {
+      "formula": "azeroot*6 + 200",
+      "group": "inscr alch",
+      "id": 245778,
+      "name": "Sin'dorei Alchemist's Mixing Rod"
+    },
+    {
+      "formula": "azeroot*4 + claw",
+      "group": "inscr cook",
+      "id": 245780,
+      "name": "Sin'dorei Rolling Pin"
+    },
+    {
+      "formula": "(azeroot + sie_ink + mun_ink)*5 + 200",
+      "group": "inscr quill",
+      "id": 245776,
+      "name": "Sin'dorei Quill"
+    },
+    {
+      "formula": "gemdust*9 + gemdust_r1 + crystal + 50",
+      "group": "jc crystal",
+      "id": 240960,
+      "name": "Sin'dorei Enchanter's Crystal"
+    },
+    {
+      "formula": "gemdust*10 + lens + lens_r1 + 50",
+      "group": "jc glass",
+      "id": 240958,
+      "name": "Improved Right-Handed Magnifying Glass"
+    },
+    {
+      "formula": "lens*6 + gemdust*2 + gemdust_r1 + 50",
+      "group": "jc loupes",
+      "id": 240959,
+      "name": "Sin'dorei Jeweler's Loupes"
+    },
+    {
+      "formula": "gemdust*15 + lens + lens_r1 + 50",
+      "group": "jc spec",
+      "id": 240957,
+      "name": "Sin'dorei Scribe's Spectacles"
+    },
+    {
+      "formula": "gemdust*10",
+      "group": "lw jc cover",
+      "id": 244630,
+      "name": "Sin'dorei Jeweler's Cover"
+    },
+    {
+      "formula": "300",
+      "group": "lw acces",
+      "id": 244624,
+      "name": "Sin'dorei Engineer's Gloves"
+    },
+    {
+      "formula": "300",
+      "group": "lw acces",
+      "id": 244626,
+      "name": "Sin'dorei Alchemist's Hat"
+    },
+    {
+      "formula": "alloy*10",
+      "group": "lw bs cover",
+      "id": 244628,
+      "name": "Sin'dorei Forgemaster's Cover"
+    },
+    {
+      "formula": "lotus*4 + 200",
+      "group": "lw herb back",
+      "id": 244621,
+      "name": "Sin'dorei Herbalist's Backpack"
+    },
+    {
+      "formula": "leather*100 + scale*100",
+      "group": "lw hunter",
+      "id": 244623,
+      "name": "Eversong Hunter's Headcover"
+    },
+    {
+      "formula": "leather*100 + scale*100",
+      "group": "lw hunter",
+      "id": 244622,
+      "name": "Sin'dorei Hunter's Pack"
+    },
+    {
+      "formula": "leather*100 + scale*100",
+      "group": "lw hunter",
+      "id": 244625,
+      "name": "Sin'dorei Leathershaper's Smock"
+    },
+    {
+      "formula": "arc_bolt*6 + arc_bolt_r1*2",
+      "group": "tailor arc",
+      "id": 239635,
+      "name": "Elegant Artisan's Alchemy Coveralls"
+    },
+    {
+      "formula": "arc_bolt*6 + arc_bolt_r1*2",
+      "group": "tailor arc",
+      "id": 239637,
+      "name": "Elegant Artisan's Enchanting Hat"
+    },
+    {
+      "formula": "arc_bolt*6 + arc_bolt_r1*2",
+      "group": "tailor arc",
+      "id": 239639,
+      "name": "Elegant Artisan's Herbalism Hat"
+    },
+    {
+      "formula": "sun_bolt*6 + sun_bolt_r1*2",
+      "group": "tailor sun",
+      "id": 239636,
+      "name": "Elegant Artisan's Cooking Hat"
+    },
+    {
+      "formula": "sun_bolt*6 + sun_bolt_r1*2",
+      "group": "tailor sun",
+      "id": 239638,
+      "name": "Elegant Artisan's Fishing Hat"
+    },
+    {
+      "formula": "sun_bolt*6 + sun_bolt_r1*2",
+      "group": "tailor sun",
+      "id": 239640,
+      "name": "Elegant Artisan's Tailoring Robe"
+    }
+  ],
+  "reagents": {
+    "alloy": {
+      "rank1": 0,
+      "rank2": 170
+    },
+    "arc_bolt": {
+      "rank1": 140,
+      "rank2": 145
+    },
+    "azeroot": {
+      "rank1": 0,
+      "rank2": 230
+    },
+    "claw": {
+      "rank1": 0,
+      "rank2": 130
+    },
+    "crystal": {
+      "rank1": 0,
+      "rank2": 610
+    },
+    "fin": {
+      "rank1": 0,
+      "rank2": 800
+    },
+    "flora": {
+      "rank1": 0,
+      "rank2": 65
+    },
+    "gemdust": {
+      "rank1": 90,
+      "rank2": 240
+    },
+    "hide": {
+      "rank1": 0,
+      "rank2": 3000
+    },
+    "leather": {
+      "rank1": 0,
+      "rank2": 4
+    },
+    "lens": {
+      "rank1": 60,
+      "rank2": 390
+    },
+    "lotus": {
+      "rank1": 0,
+      "rank2": 350
+    },
+    "mun_ink": {
+      "rank1": 0,
+      "rank2": 40
+    },
+    "scale": {
+      "rank1": 0,
+      "rank2": 7
+    },
+    "sie_ink": {
+      "rank1": 0,
+      "rank2": 125
+    },
+    "sun_bolt": {
+      "rank1": 160,
+      "rank2": 180
+    }
+  }
+}

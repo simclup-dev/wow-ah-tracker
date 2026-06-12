@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AH Tracker</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg0:#0a0b0f;--bg1:#0f1117;--bg2:#161820;--bg3:#1e2130;--border:#2a2d3e;--border-bright:#3a3f5c;--gold:#c8a84b;--gold-dim:#7a6228;--green:#4caf7d;--green-dim:#2a5c42;--red:#e05c5c;--red-dim:#6b2929;--blue:#5b9bd5;--text:#c8cdd8;--text-dim:#6b7080;--text-bright:#e8ecf4;--accent:#7c6fcf}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:15px;line-height:1.5;min-height:100vh}
+.header{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:24px;height:52px;position:sticky;top:0;z-index:100}
+.header-title{font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.header-sub{font-size:12px;color:var(--text-dim);font-family:'Share Tech Mono',monospace}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.main{padding:20px 24px;max-width:1600px;margin:0 auto}
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 18px}
+.stat-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:700;color:var(--text-bright);font-family:'Share Tech Mono',monospace}
+.stat-value.gold{color:var(--gold)}
+.stat-value.green{color:var(--green)}
+.controls{display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.search-input{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;width:220px;outline:none}
+.search-input:focus{border-color:var(--gold)}
+.search-input::placeholder{color:var(--text-dim)}
+.sort-select{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none;cursor:pointer}
+.sort-select:focus{border-color:var(--gold)}
+.btn{background:var(--bg3);border:1px solid var(--border-bright);border-radius:6px;padding:8px 16px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:.5px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.realm-list{display:flex;flex-direction:column;gap:4px}
+.realm-row{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .15s}
+.realm-row:hover{border-color:var(--border-bright)}
+.realm-row.expanded{border-color:var(--gold-dim)}
+.realm-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 60px;gap:12px;align-items:center;padding:12px 16px;cursor:pointer;user-select:none}
+.realm-header:hover{background:var(--bg3)}
+.realm-name{font-size:15px;font-weight:600;color:var(--text-bright)}
+.realm-meta{font-size:11px;color:var(--text-dim);font-family:'Share Tech Mono',monospace}
+.realm-ah{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text-dim)}
+.realm-profit{font-family:'Share Tech Mono',monospace;font-size:14px;font-weight:600;color:var(--gold)}
+.expand-btn{color:var(--text-dim);font-size:16px;text-align:right;transition:transform .2s}
+.expand-btn.open{transform:rotate(180deg)}
+.passing-bar{display:flex;align-items:center;gap:8px}
+.passing-fill{height:3px;background:var(--bg0);border-radius:2px;flex:1;overflow:hidden;margin-top:4px}
+.passing-fill-inner{height:100%;background:var(--green);border-radius:2px;transition:width .3s}
+.realm-detail{border-top:1px solid var(--border);padding:16px;background:var(--bg1)}
+.detail-controls{display:flex;gap:10px;margin-bottom:14px;align-items:center}
+.toggle-filter{font-size:12px;padding:5px 12px}
+.items-table{width:100%;border-collapse:collapse}
+.items-table th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap}
+.items-table th:hover{color:var(--text)}
+.items-table td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+.items-table tr:last-child td{border-bottom:none}
+.items-table tr.passing td{background:rgba(76,175,125,.04)}
+.items-table tr.failing td{opacity:.45}
+.items-table tr:hover td{background:var(--bg3)}
+.item-icon{width:28px;height:28px;border-radius:4px;border:1px solid var(--border);object-fit:cover}
+.item-name{font-weight:500;color:var(--text-bright);font-size:13px}
+.item-qty{font-size:10px;color:var(--text-dim)}
+.price-cell{font-family:'Share Tech Mono',monospace;font-size:13px;text-align:right}
+.price-pass{color:var(--green)}
+.price-fail{color:var(--red)}
+.price-none{color:var(--text-dim)}
+.profit-cell{font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:600;text-align:right}
+.profit-pos{color:var(--gold)}
+.profit-neg{color:var(--red)}
+.auctions-cell{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);text-align:right}
+.col-label{font-size:11px;color:var(--text-dim)}
+.loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text-dim);font-size:14px;letter-spacing:2px;text-transform:uppercase;gap:12px}
+.settings-page{max-width:900px}
+.settings-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px}
+.settings-title{font-size:15px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.reagent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.reagent-item{display:flex;flex-direction:column;gap:6px}
+.reagent-label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.reagent-inputs{display:flex;gap:6px}
+.reagent-input{background:var(--bg0);border:1px solid var(--border);border-radius:4px;padding:6px 10px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;width:76px;outline:none}
+.reagent-input:focus{border-color:var(--gold)}
+.reagent-rank{font-size:10px;color:var(--text-dim);text-align:center;margin-top:2px}
+.save-btn{background:var(--gold-dim);border:1px solid var(--gold);border-radius:6px;padding:10px 28px;color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-top:8px}
+.save-btn:hover{background:var(--gold);color:var(--bg0)}
+.realm-settings-list{display:flex;flex-direction:column;gap:4px;max-height:400px;overflow-y:auto}
+.realm-toggle-item{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:4px}
+.realm-toggle-name{flex:1;font-size:14px}
+.realm-toggle-meta{font-size:12px;color:var(--text-dim);font-family:'Share Tech Mono',monospace}
+.toggle-sw{width:36px;height:20px;background:var(--border);border-radius:10px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-sw.on{background:var(--green-dim);border:1px solid var(--green)}
+.toggle-sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--text-dim);border-radius:50%;transition:all .2s}
+.toggle-sw.on::after{left:16px;background:var(--green)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{padding:6px 16px;font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border-radius:4px;color:var(--text-dim);transition:all .15s}
+.nav-tab:hover{color:var(--text);background:var(--bg3)}
+.nav-tab.active{background:var(--bg3);color:var(--text-bright);border:1px solid var(--border-bright)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg0)}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-in{animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;letter-spacing:.3px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);transition:all .15s}
+.chip:hover{border-color:var(--border-bright);color:var(--text)}
+.chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.chip.prof{font-size:11px}
+.decor-listed{font-family:'Share Tech Mono',monospace;font-size:15px;font-weight:700;color:var(--blue)}
+.exp-tag{font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text-dim);font-family:'Share Tech Mono',monospace}
+.reagent-decor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-height:400px;overflow-y:auto}
+.reagent-decor-item{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg3);border-radius:4px}
+.reagent-decor-icon{width:22px;height:22px;border-radius:3px;object-fit:cover;flex-shrink:0}
+.reagent-decor-name{flex:1;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reagent-decor-price{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--gold)}
+.reagent-decor-input{background:var(--bg0);border:1px solid var(--border);border-radius:3px;padding:3px 6px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;width:70px;outline:none}
+.reagent-decor-input:focus{border-color:var(--gold)}
+.lumber-tag{font-size:10px;color:var(--text-dim);background:var(--bg0);padding:1px 4px;border-radius:2px;flex-shrink:0}
+.region-toggle{display:flex;gap:4px;margin-bottom:12px}
+.region-btn{padding:5px 14px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);transition:all .15s}
+.region-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useMemo}=React;
+const API='';
+
+const EXP_LABELS={pandaria:'Pandaria',legion:'Legion',kul_tiran:'Kul Tiran',cataclysm:'Cataclysm',outland:'Outland',draenor:'Draenor',midnight:'Midnight',khaz_algar:'Khaz Algar'};
+const PROF_LABELS={alchemy:'Alchemy',blacksmithing:'BS',cooking:'Cooking',enchanting:'Enchanting',engineering:'Engi',inscription:'Inscr',jewelcrafting:'JC',leatherworking:'LW',tailoring:'Tailoring'};
+
+function fmt(n){if(n==null)return'—';return Math.round(n).toLocaleString('en-US')}
+
+function RealmRow({realm}){
+  const [expanded,setExpanded]=useState(false);
+  const [detail,setDetail]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [showAll,setShowAll]=useState(false);
+  const [sortCol,setSortCol]=useState('profit');
+  const [sortDir,setSortDir]=useState('desc');
+
+  const toggle=async()=>{
+    setExpanded(e=>!e);
+    if(!detail&&!loading){
+      setLoading(true);
+      try{const r=await fetch(`${API}/api/realm/${realm.id}`);setDetail(await r.json())}catch(e){}
+      setLoading(false);
+    }
+  };
+
+  const pct=Math.round((realm.passing/realm.total)*100);
+
+  const sortedItems=useMemo(()=>{
+    if(!detail)return[];
+    let items=showAll?detail.items:detail.items.filter(i=>i.passing);
+    return[...items].sort((a,b)=>{
+      let av=a[sortCol],bv=b[sortCol];
+      if(av==null)av=-Infinity;if(bv==null)bv=-Infinity;
+      return sortDir==='desc'?bv-av:av-bv;
+    });
+  },[detail,showAll,sortCol,sortDir]);
+
+  const handleSort=col=>{
+    if(sortCol===col)setSortDir(d=>d==='desc'?'asc':'desc');
+    else{setSortCol(col);setSortDir('desc');}
+  };
+  const arr=col=>sortCol===col?(sortDir==='desc'?' ↓':' ↑'):'';
+
+  const passingColor=pct>60?'var(--green)':pct>25?'var(--gold)':'var(--text-dim)';
+
+  return(
+    <div className={`realm-row${expanded?' expanded':''}`}>
+      <div className="realm-header" onClick={toggle}>
+        <div>
+          <div className="realm-name">{realm.name}</div>
+          <div className="realm-meta" style={{display:'flex',gap:8,alignItems:'center'}}>
+            <span>{realm.region.toUpperCase()}</span>
+            {realm.tier&&<span style={{
+  fontWeight:600,
+  fontSize:11,
+  padding:'1px 6px',
+  borderRadius:3,
+  background:
+    realm.tier==='Full'?'#2e1a00':
+    realm.tier==='High'?'#3d0000':
+    realm.tier==='Medium'?'#3d3000':
+    realm.tier==='Low'?'#0a2e0a':
+    realm.tier==='New Players'?'#0a2a2e':'#1e2130',
+  color:
+    realm.tier==='Full'?'#b87333':
+    realm.tier==='High'?'#ff3333':
+    realm.tier==='Medium'?'#d4b84a':
+    realm.tier==='Low'?'#4caf7d':
+    realm.tier==='New Players'?'#4ab8c8':'#6b7080'
+}}>{realm.tier}</span>}
+            <span>· {realm.last_updated?realm.last_updated.slice(11,16)+' UTC':'—'}</span>
+          </div>
+        </div>
+        <div>
+          <div className="col-label">AH Size</div>
+          <div className="realm-ah">{fmt(realm.total_auctions)}</div>
+        </div>
+        <div>
+          <div className="col-label">Passing</div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <span style={{fontSize:16,fontWeight:700,color:passingColor}}>{realm.passing}/{realm.total}</span>
+          </div>
+          <div className="passing-fill"><div className="passing-fill-inner" style={{width:pct+'%'}}></div></div>
+        </div>
+        <div>
+          <div className="col-label">Est. Profit</div>
+          <div className="realm-profit">{realm.total_profit>0?fmt(realm.total_profit)+'g':'—'}</div>
+        </div>
+        <div>
+          <div className="col-label">Last Update</div>
+          <div className="realm-meta">{realm.last_updated?realm.last_updated.slice(5,16):'—'}</div>
+        </div>
+        <div className={`expand-btn${expanded?' open':''}`}>▼</div>
+      </div>
+      {expanded&&(
+        <div className="realm-detail fade-in">
+          <div className="detail-controls">
+            <button className={`btn toggle-filter${!showAll?' active':''}`} onClick={e=>{e.stopPropagation();setShowAll(false)}}>Passing only</button>
+            <button className={`btn toggle-filter${showAll?' active':''}`} onClick={e=>{e.stopPropagation();setShowAll(true)}}>All items</button>
+            {loading&&<div className="spinner"></div>}
+          </div>
+          {detail?(
+            <table className="items-table">
+              <thead>
+                <tr>
+                  <th style={{width:36}}></th>
+                  <th>Item</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('ah_price')}>AH Price{arr('ah_price')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('my_min')}>My Min{arr('my_min')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('profit')}>Profit{arr('profit')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('num_auctions')}>Lots{arr('num_auctions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedItems.map(item=>(
+                  <tr key={item.id} className={item.passing?'passing':'failing'}>
+                    <td><img className="item-icon" src={item.icon} alt="" onError={e=>e.target.style.display='none'}/></td>
+                    <td>
+                      <div className="item-name">{item.name}</div>
+                      {item.quantity>1&&<div className="item-qty">×{item.quantity}</div>}
+                    </td>
+                    <td className={`price-cell${item.ah_price?(item.passing?' price-pass':' price-fail'):' price-none'}`}>{item.ah_price?fmt(item.ah_price)+'g':'—'}</td>
+                    <td className="price-cell">{fmt(item.my_min)}g</td>
+                    <td className={`profit-cell${item.profit!=null?(item.profit>0?' profit-pos':' profit-neg'):''}`}>{item.profit!=null?(item.profit>0?'+':'')+fmt(item.profit)+'g':'—'}</td>
+                    <td className="auctions-cell">{item.num_auctions||'—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ):<div className="loading"><div className="spinner"></div></div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RealmPage({region}){
+  const [realms,setRealms]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [search,setSearch]=useState('');
+  const [sortBy,setSortBy]=useState('total_auctions');
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{const r=await fetch(`${API}/api/realms?region=${region}`);setRealms(await r.json())}catch(e){}
+    setLoading(false);
+  },[region]);
+
+  useEffect(()=>{load();},[load]);
+
+  const filtered=useMemo(()=>{
+    let r=realms.filter(r=>r.name.toLowerCase().includes(search.toLowerCase()));
+    r.sort((a,b)=>{
+      if(sortBy==='total_auctions')return b.total_auctions-a.total_auctions;
+      if(sortBy==='passing')return b.passing-a.passing;
+      if(sortBy==='profit')return b.total_profit-a.total_profit;
+      return 0;
+    });
+    return r;
+  },[realms,search,sortBy]);
+
+  const totalProfit=useMemo(()=>filtered.reduce((s,r)=>s+r.total_profit,0),[filtered]);
+  const topRealm=useMemo(()=>filtered.length?filtered.reduce((a,b)=>b.passing>a.passing?b:a,filtered[0]):null,[filtered]);
+  const lastUpdate=realms.length?realms[0].last_updated:null;
+
+  return(
+    <div>
+      <div className="summary-bar">
+        <div className="stat-card"><div className="stat-label">Realms</div><div className="stat-value">{filtered.length}</div></div>
+        <div className="stat-card"><div className="stat-label">Total Passing</div><div className="stat-value green">{filtered.reduce((s,r)=>s+r.passing,0)}</div></div>
+        <div className="stat-card"><div className="stat-label">Est. Total Profit</div><div className="stat-value gold">{fmt(totalProfit)}g</div></div>
+        <div className="stat-card"><div className="stat-label">Best Realm</div><div className="stat-value" style={{fontSize:16}}>{topRealm?topRealm.name:'—'}</div></div>
+      </div>
+      <div className="controls">
+        <input className="search-input" placeholder="Search realm..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <select className="sort-select" value={sortBy} onChange={e=>setSortBy(e.target.value)}>
+          <option value="total_auctions">Sort: AH Size</option>
+          <option value="passing">Sort: Passing Items</option>
+          <option value="profit">Sort: Est. Profit</option>
+        </select>
+        <button className="btn" onClick={load}>↻ Refresh</button>
+        {lastUpdate&&<span style={{fontSize:12,color:'var(--text-dim)',fontFamily:'Share Tech Mono'}}>{lastUpdate.slice(0,16)} UTC</span>}
+      </div>
+      {loading?<div className="loading"><div className="spinner"></div>&nbsp;Loading...</div>:
+        <div className="realm-list">{filtered.map(r=><RealmRow key={r.id} realm={r}/>)}</div>}
+    </div>
+  );
+}
+
+function DecorRealmRow({realm, expFilter, profFilter}){
+  const [expanded,setExpanded]=useState(false);
+  const [detail,setDetail]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [sortCol,setSortCol]=useState('profit');
+  const [sortDir,setSortDir]=useState('desc');
+
+  const toggle=async()=>{
+    setExpanded(e=>!e);
+    if(!detail&&!loading){
+      setLoading(true);
+      try{const r=await fetch(`${API}/api/decor/realm/${realm.id}`);setDetail(await r.json())}catch(e){}
+      setLoading(false);
+    }
+  };
+
+  const handleSort=col=>{
+    if(sortCol===col)setSortDir(d=>d==='desc'?'asc':'desc');
+    else{setSortCol(col);setSortDir('desc');}
+  };
+  const arr=col=>sortCol===col?(sortDir==='desc'?' ↓':' ↑'):'';
+
+  const filteredItems=useMemo(()=>{
+    if(!detail)return[];
+    let items=detail.items;
+    if(expFilter)items=items.filter(i=>i.expansion===expFilter);
+    if(profFilter)items=items.filter(i=>i.profession===profFilter);
+    return[...items].sort((a,b)=>{
+      let av=a[sortCol]??-Infinity,bv=b[sortCol]??-Infinity;
+      return sortDir==='desc'?bv-av:av-bv;
+    });
+  },[detail,expFilter,profFilter,sortCol,sortDir]);
+
+  const profitableColor=realm.profitable>0?'var(--green)':'var(--text-dim)';
+  const pct=realm.total>0?Math.round((realm.profitable/realm.total)*100):0;
+
+  return(
+    <div className={`realm-row${expanded?' expanded':''}`}>
+      <div className="realm-header" onClick={toggle}>
+        <div>
+          <div className="realm-name">{realm.name}</div>
+          <div className="realm-meta" style={{display:'flex',gap:8,alignItems:'center'}}>
+            <span>{realm.region.toUpperCase()}</span>
+            {realm.tier&&<span style={{fontWeight:600,fontSize:11,padding:'1px 6px',borderRadius:3,
+              background:realm.tier==='Full'?'#2e1a00':realm.tier==='High'?'#3d0000':realm.tier==='Medium'?'#3d3000':realm.tier==='Low'?'#0a2e0a':'#1e2130',
+              color:realm.tier==='Full'?'#b87333':realm.tier==='High'?'#ff3333':realm.tier==='Medium'?'#d4b84a':realm.tier==='Low'?'#4caf7d':'#6b7080'
+            }}>{realm.tier}</span>}
+            <span>· {realm.last_updated?realm.last_updated.slice(11,16)+' UTC':'—'}</span>
+          </div>
+        </div>
+        <div><div className="col-label">AH Size</div><div className="realm-ah">{fmt(realm.total_auctions)}</div></div>
+        <div>
+          <div className="col-label">Profitable</div>
+          <div style={{fontSize:16,fontWeight:700,color:profitableColor}}>{realm.profitable}/{realm.total}</div>
+          <div className="passing-fill"><div className="passing-fill-inner" style={{width:pct+'%',background:'var(--green)'}}></div></div>
+        </div>
+        <div><div className="col-label">Est. Profit</div><div className="realm-profit">{realm.total_profit>0?fmt(realm.total_profit)+'g':'—'}</div></div>
+        <div><div className="col-label">Last Update</div><div className="realm-meta">{realm.last_updated?realm.last_updated.slice(5,16):'—'}</div></div>
+        <div className={`expand-btn${expanded?' open':''}`}>▼</div>
+      </div>
+      {expanded&&(
+        <div className="realm-detail fade-in">
+          {loading&&<div className="loading"><div className="spinner"></div></div>}
+          {detail&&(
+            <table className="items-table">
+              <thead>
+                <tr>
+                  <th style={{width:32}}></th>
+                  <th onClick={()=>handleSort('name')}>Item{arr('name')}</th>
+                  <th style={{textAlign:'center',width:90}}>Expansion</th>
+                  <th style={{textAlign:'center',width:80}}>Prof</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('ah_price')}>AH Price{arr('ah_price')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('cost')}>Cost{arr('cost')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('profit')}>Profit{arr('profit')}</th>
+                  <th style={{textAlign:'right'}} onClick={()=>handleSort('num_auctions')}>Lots{arr('num_auctions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredItems.length===0&&<tr><td colSpan={8} style={{textAlign:'center',color:'var(--text-dim)',padding:20}}>No items listed</td></tr>}
+                {filteredItems.map(item=>(
+                  <tr key={item.id}>
+                    <td><img className="item-icon" src={item.icon} alt="" onError={e=>e.target.style.display='none'}/></td>
+                    <td><div className="item-name">{item.name}</div></td>
+                    <td style={{textAlign:'center'}}><span className="exp-tag">{EXP_LABELS[item.expansion]||item.expansion}</span></td>
+                    <td style={{textAlign:'center'}}><span className="exp-tag">{PROF_LABELS[item.profession]||item.profession}</span></td>
+                    <td className="price-cell price-pass">{item.ah_price?fmt(item.ah_price)+'g':'—'}</td>
+                    <td className="price-cell" title={!item.cost_known?'Не всі ціни реагентів відомі':''}>
+                      {item.cost>0?(fmt(item.cost)+(item.cost_known?'g':'g?')):'?'}
+                    </td>
+                    <td className={`profit-cell${item.profit!=null&&item.cost_known?(item.profit>0?' profit-pos':' profit-neg'):''}`}>
+                      {item.profit!=null&&item.cost_known?(item.profit>0?'+':'')+fmt(item.profit)+'g':item.profit!=null?'~'+fmt(item.profit)+'g?':'—'}
+                    </td>
+                    <td className="auctions-cell">{item.num_auctions||'—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DecorPage({region}){
+  const [realms,setRealms]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [search,setSearch]=useState('');
+  const [sortBy,setSortBy]=useState('total_auctions');
+  const [expFilter,setExpFilter]=useState('');
+  const [profFilter,setProfFilter]=useState('');
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{
+      const params=new URLSearchParams({region});
+      if(expFilter)params.set('expansion',expFilter);
+      if(profFilter)params.set('profession',profFilter);
+      const r=await fetch(`${API}/api/decor?${params}`);
+      setRealms(await r.json());
+    }catch(e){}
+    setLoading(false);
+  },[region,expFilter,profFilter]);
+
+  useEffect(()=>{load();},[load]);
+
+  const filtered=useMemo(()=>{
+    let r=realms.filter(r=>r.name.toLowerCase().includes(search.toLowerCase()));
+    r.sort((a,b)=>{
+      if(sortBy==='total_auctions')return b.total_auctions-a.total_auctions;
+      if(sortBy==='profitable')return b.profitable-a.profitable;
+      if(sortBy==='profit')return b.total_profit-a.total_profit;
+      return 0;
+    });
+    return r;
+  },[realms,search,sortBy]);
+
+  const topRealm=useMemo(()=>filtered.length?filtered.reduce((a,b)=>b.profitable>a.profitable?b:a,filtered[0]):null,[filtered]);
+  const lastUpdate=realms.length?realms[0].last_updated:null;
+
+  const EXPANSIONS=['pandaria','legion','kul_tiran','cataclysm','draenor'];
+  const PROFESSIONS=['alchemy','blacksmithing','cooking','enchanting','engineering','inscription','jewelcrafting','leatherworking','tailoring'];
+
+  return(
+    <div>
+      <div className="summary-bar">
+        <div className="stat-card"><div className="stat-label">Realms</div><div className="stat-value">{filtered.length}</div></div>
+        <div className="stat-card"><div className="stat-label">Total Profitable</div><div className="stat-value" style={{color:'var(--green)'}}>{filtered.reduce((s,r)=>s+r.profitable,0)}</div></div>
+        <div className="stat-card"><div className="stat-label">Est. Total Profit</div><div className="stat-value gold">{fmt(filtered.reduce((s,r)=>s+r.total_profit,0))}g</div></div>
+        <div className="stat-card"><div className="stat-label">Best Realm</div><div className="stat-value" style={{fontSize:16}}>{topRealm?topRealm.name:'—'}</div></div>
+      </div>
+      <div style={{marginBottom:10}}>
+        <div style={{fontSize:11,color:'var(--text-dim)',textTransform:'uppercase',letterSpacing:1,marginBottom:6}}>Expansion</div>
+        <div className="filter-chips">
+          <span className={`chip${!expFilter?' active':''}`} onClick={()=>setExpFilter('')}>All</span>
+          {EXPANSIONS.map(e=><span key={e} className={`chip${expFilter===e?' active':''}`} onClick={()=>setExpFilter(f=>f===e?'':e)}>{EXP_LABELS[e]}</span>)}
+        </div>
+        <div style={{fontSize:11,color:'var(--text-dim)',textTransform:'uppercase',letterSpacing:1,marginBottom:6}}>Profession</div>
+        <div className="filter-chips">
+          <span className={`chip prof${!profFilter?' active':''}`} onClick={()=>setProfFilter('')}>All</span>
+          {PROFESSIONS.map(p=><span key={p} className={`chip prof${profFilter===p?' active':''}`} onClick={()=>setProfFilter(f=>f===p?'':p)}>{PROF_LABELS[p]}</span>)}
+        </div>
+      </div>
+      <div className="controls">
+        <input className="search-input" placeholder="Search realm..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <select className="sort-select" value={sortBy} onChange={e=>setSortBy(e.target.value)}>
+          <option value="total_auctions">Sort: AH Size</option>
+          <option value="profitable">Sort: Profitable Items</option>
+          <option value="profit">Sort: Est. Profit</option>
+        </select>
+        <button className="btn" onClick={load}>↻ Refresh</button>
+        {lastUpdate&&<span style={{fontSize:12,color:'var(--text-dim)',fontFamily:'Share Tech Mono'}}>{lastUpdate.slice(0,16)} UTC</span>}
+      </div>
+      {loading?<div className="loading"><div className="spinner"></div>&nbsp;Loading...</div>:
+        <div className="realm-list">{filtered.map(r=><DecorRealmRow key={r.id} realm={r} expFilter={expFilter} profFilter={profFilter}/>)}</div>}
+    </div>
+  );
+}
+
+function SettingsPage({sharedData,onSaved}){
+  const {recipes:initRecipes,allRealms,settings:initSettings,decorReagentMeta,toolsReagentMeta}=sharedData;
+  const [recipes,setRecipes]=useState(initRecipes);
+  const [settings,setSettings]=useState(initSettings);
+  const [saved,setSaved]=useState(false);
+  const [realmSearch,setRealmSearch]=useState('');
+  const [reagentRegion,setReagentRegion]=useState('eu');
+  const [decorReagents,setDecorReagents]=useState(initSettings.reagent_prices||{eu:{},us:{}});
+
+  useEffect(()=>{setRecipes(initRecipes);},[initRecipes]);
+  useEffect(()=>{setSettings(initSettings);setDecorReagents(initSettings.reagent_prices||{eu:{},us:{}});},[initSettings]);
+
+  const save=async()=>{
+    const fullSettings={...settings,reagent_prices:decorReagents};
+    await fetch(`${API}/api/recipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(recipes)});
+    await fetch(`${API}/api/settings`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fullSettings)});
+    setSaved(true);setTimeout(()=>setSaved(false),2000);
+    if(onSaved)onSaved(recipes,fullSettings);
+  };
+
+  const setDecorReagentPrice=(region,id,val)=>setDecorReagents(d=>({...d,[region]:{...d[region],[id]:parseFloat(val)||0}}));
+
+  const updReagent=(key,rank,val)=>setRecipes(r=>({...r,reagents:{...r.reagents,[key]:{...r.reagents[key],[rank]:parseFloat(val)||0}}}));
+  const toggleRealm=id=>setSettings(s=>{const h=s.hidden_realms.includes(id)?s.hidden_realms.filter(x=>x!==id):[...s.hidden_realms,id];return{...s,hidden_realms:h}});
+
+  // Іконки для tools reagents по key+rank — ПЕРЕД conditional return
+  const toolsIconByKey=useMemo(()=>{
+    const reg=reagentRegion;
+    const m=toolsReagentMeta[reg]||{};
+    const out={};
+    Object.values(m).forEach(v=>{
+      if(!out[v.key])out[v.key]={icon:v.icon,name:v.name,rank1_ah:0,rank2_ah:0};
+      if(v.rank==='rank1')out[v.key].rank1_ah=v.price;
+      if(v.rank==='rank2')out[v.key].rank2_ah=v.price;
+    });
+    return out;
+  },[toolsReagentMeta,reagentRegion]);
+
+  if(!recipes||!initRecipes)return<div className="loading"><div className="spinner"></div></div>;
+
+  const filteredRealms=allRealms.filter(r=>r.name.toLowerCase().includes(realmSearch.toLowerCase()));
+
+  const reagentOrder=['flora','mun_ink','sie_ink','gemdust','alloy','azeroot','lens','lotus','sun_bolt','arc_bolt','claw','fin','hide','crystal','leather','scale'];
+
+  return(
+    <div className="settings-page">
+      <div className="settings-section">
+        <div className="settings-title">Reagent Prices</div>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+          <span style={{fontSize:13,color:'var(--text-dim)'}}>AH ціни в дужках — довідково</span>
+          <div className="region-toggle" style={{marginBottom:0}}>
+            <div className={`region-btn${reagentRegion==='eu'?' active':''}`} onClick={()=>setReagentRegion('eu')}>EU</div>
+            <div className={`region-btn${reagentRegion==='us'?' active':''}`} onClick={()=>setReagentRegion('us')}>US</div>
+          </div>
+        </div>
+        <div className="reagent-grid">
+          {reagentOrder.map(key=>{
+            const r=recipes.reagents[key];if(!r)return null;
+            const meta=toolsIconByKey[key];
+            return(
+              <div key={key} className="reagent-item">
+                <div className="reagent-label" style={{display:'flex',alignItems:'center',gap:5}}>
+                  {meta?.icon&&<img src={meta.icon} style={{width:16,height:16,borderRadius:2}} alt="" onError={e=>e.target.style.display='none'}/>}
+                  {key.replace(/_/g,' ')}
+                </div>
+                <div className="reagent-inputs">
+                  <div>
+                    <input className="reagent-input" type="number" value={r.rank1||0} onChange={e=>updReagent(key,'rank1',e.target.value)} title={meta?.rank1_ah?`AH: ${meta.rank1_ah}g`:''}/>
+                    <div className="reagent-rank">rank 1{meta?.rank1_ah>0?` (${meta.rank1_ah}g)`:''}</div>
+                  </div>
+                  <div>
+                    <input className="reagent-input" type="number" value={r.rank2||0} onChange={e=>updReagent(key,'rank2',e.target.value)} title={meta?.rank2_ah?`AH: ${meta.rank2_ah}g`:''}/>
+                    <div className="reagent-rank">rank 2{meta?.rank2_ah>0?` (${meta.rank2_ah}g)`:''}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="settings-section">
+        <div className="settings-title">Profit & Alerts</div>
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          <div style={{display:'flex',alignItems:'center',gap:16}}>
+            <span style={{color:'var(--text-dim)',fontSize:14}}>Min profit margin (gold)</span>
+            <input className="reagent-input" type="number" value={settings.profit_margin!=null?settings.profit_margin:1000} onChange={e=>setSettings(s=>({...s,profit_margin:parseInt(e.target.value)||0}))} style={{width:80}}/>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:16}}>
+            <span style={{color:'var(--text-dim)',fontSize:14}}>Alert when passing items change by ±</span>
+            <input className="reagent-input" type="number" value={settings.alert_threshold||5} onChange={e=>setSettings(s=>({...s,alert_threshold:parseInt(e.target.value)||1}))} style={{width:60}}/>
+            <span style={{color:'var(--text-dim)',fontSize:14}}>items</span>
+          </div>
+        </div>
+      </div>
+      <div className="settings-section">
+        <div className="settings-title">Decor Reagent Prices</div>
+        <div style={{marginBottom:12,fontSize:13,color:'var(--text-dim)'}}>Ціни з АГ оновлюються автоматично. Можна перевизначити вручну.</div>
+        <div className="region-toggle">
+          <div className={`region-btn${reagentRegion==='eu'?' active':''}`} onClick={()=>setReagentRegion('eu')}>EU</div>
+          <div className={`region-btn${reagentRegion==='us'?' active':''}`} onClick={()=>setReagentRegion('us')}>US</div>
+        </div>
+        <div className="reagent-decor-grid">
+          {decorReagentMeta.map(r=>{
+            const ahPrice=reagentRegion==='eu'?r.eu_price:r.us_price;
+            const override=decorReagents[reagentRegion]?.[r.id];
+            const displayPrice=override!=null?override:ahPrice;
+            return(
+              <div key={r.id} className="reagent-decor-item">
+                {r.icon?<img className="reagent-decor-icon" src={r.icon} alt="" onError={e=>e.target.style.display='none'}/>:<div style={{width:22,height:22,background:'var(--bg0)',borderRadius:3,flexShrink:0}}/>}
+                <span className="reagent-decor-name" title={r.name}>{r.name}</span>
+                {r.is_lumber
+                  ?<span className="lumber-tag">🪵 200g</span>
+                  :<input className="reagent-decor-input" type="number" value={override!=null?override:ahPrice}
+                      placeholder={ahPrice||'0'}
+                      onChange={e=>setDecorReagentPrice(reagentRegion,r.id,e.target.value)}
+                      title={`AH: ${ahPrice}g`}/>
+                }
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="settings-section">
+        <div className="settings-title">Realm Visibility</div>
+        <input className="search-input" placeholder="Search realm..." value={realmSearch} onChange={e=>setRealmSearch(e.target.value)} style={{marginBottom:12,width:'100%'}}/>
+        <div className="realm-settings-list">
+          {filteredRealms.map(realm=>{
+            const hidden=settings.hidden_realms.includes(realm.id);
+            return(
+              <div key={realm.id} className="realm-toggle-item">
+                <span className="realm-toggle-name">{realm.name}</span>
+                <span className="realm-toggle-meta">{realm.region.toUpperCase()} · {fmt(realm.total_auctions)}</span>
+                <div className={`toggle-sw${!hidden?' on':''}`} onClick={()=>toggleRealm(realm.id)}></div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <button className="save-btn" onClick={save}>{saved?'✓ Saved':'Save All Settings'}</button>
+    </div>
+  );
+}
+
+
+const PRICE_GROUPS = [
+  {label:'BS', items:[
+    {id:237951, name:'bs lw tool set'},
+    {id:237950, name:'bs needlet set'},
+    {id:237952, name:'bs toolbox'},
+    {id:238018, name:'bs tool ×4'},
+  ]},
+  {label:'ENGI', items:[
+    {id:244720, name:'engi big'},
+    {id:244714, name:'engi clampers'},
+    {id:244712, name:'engi fish rod'},
+    {id:244716, name:'engi hardhat'},
+    {id:244710, name:'engi headlamp'},
+    {id:244708, name:'engi tailor snippers'},
+  ]},
+  {label:'INSCR', items:[
+    {id:245778, name:'inscr alch rod'},
+    {id:245780, name:'inscr cook pin'},
+    {id:245776, name:'inscr quill'},
+  ]},
+  {label:'JC', items:[
+    {id:240960, name:'jc crystal'},
+    {id:240958, name:'jc glass'},
+    {id:240959, name:'jc loupes'},
+    {id:240957, name:'jc spec'},
+  ]},
+  {label:'LW', items:[
+    {id:244624, name:'lw acces ×2'},
+    {id:244628, name:'lw bs cover'},
+    {id:244621, name:'lw herb back'},
+    {id:244623, name:'lw hunter ×3'},
+    {id:244630, name:'lw jc cover'},
+  ]},
+  {label:'TAILOR', items:[
+    {id:239635, name:'tailor arc ×3'},
+    {id:239636, name:'tailor sun ×3'},
+  ]},
+];
+
+function PricesPage(){
+  const [region, setRegion] = useState('eu');
+  const [prices, setPrices] = useState({});
+  const [copied, setCopied] = useState(false);
+
+  useEffect(()=>{
+    setPrices({});
+    fetch(`${API}/api/min_prices?region=${region}`).then(r=>r.json()).then(data=>{
+      setPrices(data);
+    });
+  },[region]);
+
+  const copyAll = () => {
+    const lines = [];
+    PRICE_GROUPS.forEach(g => {
+      lines.push('--- ' + g.label + ' ---');
+      g.items.forEach(item => {
+        const p = prices[item.id];
+        lines.push(`${item.name.padEnd(22)} ${p ? fmt(p)+'g' : '—'}`);
+      });
+      lines.push('');
+    });
+    navigator.clipboard.writeText(lines.join('\n'));
+    setCopied(true);
+    setTimeout(()=>setCopied(false), 2000);
+  };
+
+  const half = Math.ceil(PRICE_GROUPS.length / 2);
+  const col1 = PRICE_GROUPS.slice(0, half);
+  const col2 = PRICE_GROUPS.slice(half);
+
+  const renderGroup = (group) => (
+    <div key={group.label} style={{marginBottom:20}}>
+      <div style={{fontSize:11,fontWeight:700,color:'var(--text-dim)',textTransform:'uppercase',letterSpacing:2,marginBottom:8,paddingBottom:4,borderBottom:'1px solid var(--border)'}}>{group.label}</div>
+      {group.items.map(item=>(
+        <div key={item.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'5px 8px',borderRadius:4,cursor:'pointer',transition:'background .1s'}}
+          onMouseEnter={e=>e.currentTarget.style.background='var(--bg3)'}
+          onMouseLeave={e=>e.currentTarget.style.background='transparent'}
+          onClick={()=>navigator.clipboard.writeText(String(prices[item.id]||''))}
+        >
+          <span style={{fontSize:14,color:'var(--text)'}}>{item.name}</span>
+          <span style={{fontSize:14,fontFamily:'Share Tech Mono',fontWeight:600,color:prices[item.id]?'var(--gold)':'var(--text-dim)'}}>{prices[item.id]?fmt(prices[item.id])+'g':'—'}</span>
+        </div>
+      ))}
+    </div>
+  );
+
+  return(
+    <div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20}}>
+        <div style={{display:'flex',alignItems:'center',gap:16}}>
+          <div style={{fontSize:16,fontWeight:700,color:'var(--gold)',textTransform:'uppercase',letterSpacing:1}}>Min Prices</div>
+          <div style={{display:'flex',gap:4}}>
+            {['eu','us'].map(r=>(
+              <button key={r} className="btn" onClick={()=>setRegion(r)}
+                style={{opacity: region===r ? 1 : 0.45, fontWeight: region===r ? 700 : 400}}>
+                {r.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+        <button className="btn" onClick={copyAll}>{copied?'✓ Copied':'Copy All'}</button>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:32}}>
+        <div>{col1.map(renderGroup)}</div>
+        <div>{col2.map(renderGroup)}</div>
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  const [tab,setTab]=useState('eu');
+  const [sharedData,setSharedData]=useState({recipes:null,allRealms:[],settings:{hidden_realms:[],alert_threshold:5},decorReagentMeta:[],toolsReagentMeta:{eu:{},us:{}}});
+
+  useEffect(()=>{
+    fetch(`${API}/api/recipes`).then(r=>r.json()).then(recipes=>setSharedData(d=>({...d,recipes})));
+    fetch(`${API}/api/realms/all`).then(r=>r.json()).then(allRealms=>setSharedData(d=>({...d,allRealms})));
+    fetch(`${API}/api/settings`).then(r=>r.json()).then(settings=>setSharedData(d=>({...d,settings})));
+    Promise.all([
+      fetch(`${API}/api/reagent_prices?region=eu`).then(r=>r.json()).catch(()=>({})),
+      fetch(`${API}/api/reagent_prices?region=us`).then(r=>r.json()).catch(()=>({})),
+    ]).then(([eu,us])=>{
+      const meta=Object.entries(eu).map(([id,v])=>({id:parseInt(id),name:v.name,icon:v.icon,is_lumber:v.is_lumber,eu_price:v.price,us_price:(us[id]||{}).price||0}));
+      meta.sort((a,b)=>a.name.localeCompare(b.name));
+      setSharedData(d=>({...d,decorReagentMeta:meta}));
+    });
+    Promise.all([
+      fetch(`${API}/api/tools_reagent_prices?region=eu`).then(r=>r.json()).catch(()=>({})),
+      fetch(`${API}/api/tools_reagent_prices?region=us`).then(r=>r.json()).catch(()=>({})),
+    ]).then(([eu,us])=>setSharedData(d=>({...d,toolsReagentMeta:{eu,us}})));
+  },[]);
+
+  const handleSettingsSaved=(recipes,settings)=>setSharedData(d=>({...d,recipes,settings}));
+
+  const isDecor=tab==='eu-decor'||tab==='us-decor';
+  return(
+    <div>
+      <div className="header">
+        <div className="header-title">⚒ AH Tracker</div>
+        <div className="header-sub">{isDecor?'Midnight · Decor':'Midnight · Prof Tools'}</div>
+        <div className="header-right">
+          <div className="nav-tabs">
+            <div className={`nav-tab${tab==='eu'?' active':''}`} onClick={()=>setTab('eu')}>EU</div>
+            <div className={`nav-tab${tab==='us'?' active':''}`} onClick={()=>setTab('us')}>US</div>
+            <div className={`nav-tab${tab==='eu-decor'?' active':''}`} onClick={()=>setTab('eu-decor')} style={{color:tab==='eu-decor'?'var(--text-bright)':'var(--blue)',opacity:tab==='eu-decor'?1:.7}}>EU Decor</div>
+            <div className={`nav-tab${tab==='us-decor'?' active':''}`} onClick={()=>setTab('us-decor')} style={{color:tab==='us-decor'?'var(--text-bright)':'var(--blue)',opacity:tab==='us-decor'?1:.7}}>US Decor</div>
+            <div className={`nav-tab${tab==='prices'?' active':''}`} onClick={()=>setTab('prices')}>Prices</div>
+            <div className={`nav-tab${tab==='settings'?' active':''}`} onClick={()=>setTab('settings')}>⚙ Settings</div>
+          </div>
+        </div>
+      </div>
+      <div className="main">
+        {tab==='eu'&&<RealmPage key="eu" region="eu"/>}
+        {tab==='us'&&<RealmPage key="us" region="us"/>}
+        {tab==='eu-decor'&&<DecorPage key="eu-decor" region="eu"/>}
+        {tab==='us-decor'&&<DecorPage key="us-decor" region="us"/>}
+        {tab==='prices'&&<PricesPage/>}
+        {tab==='settings'&&<SettingsPage sharedData={sharedData} onSaved={handleSettingsSaved}/>}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
